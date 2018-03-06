@@ -97,6 +97,10 @@ table_head=['lb','lbxh','zddh','zdmc','jsjIP','ckzbh','jsjbh','txbh','txxh',
 define_table=''
 using_table=''
 for i in range(len(table_head)):
+    if table_head[i]=='zdjrsj':
+        define_table=define_table+table_head[i]+' date, '
+        using_table=using_table+table_head[i]+', '
+        continue
     if type(data[0][i])==float:
         define_table=define_table+table_head[i]+' float, '
     elif type(data[0][i])==int:
@@ -109,6 +113,9 @@ value=[]
 for i in range(len(data)):
     sing=''
     for j in range(len(data[0])):
+        if table_head[j]=='zdjrsj':
+             sing=sing+"'10000101',"
+             continue
         if type(data[0][j])==float or type(data[0][j])==int:
             if data[i][j]=='':
                 data[i][j]=-1
