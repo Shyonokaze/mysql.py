@@ -111,7 +111,7 @@ for i in range(len(data)):
     for j in range(len(data[0])):
         if type(data[0][j])==float or type(data[0][j])==int:
             if data[i][j]=='':
-                data[i][j]=0
+                data[i][j]=-1
             sing=sing+str(data[i][j])+","
         else:
             sing=sing+"'"+str(data[i][j])+"',"
