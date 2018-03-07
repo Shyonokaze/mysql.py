@@ -1,9 +1,11 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Spyder Editor
+Created on Wed Mar  7 11:13:35 2018
 
-This is a temporary script file.
+@author: pyh
 """
+
 class mysql_data:
     def __init__(self,user_name,password):
         self.conn=pymysql.connect(host='127.0.0.1',
@@ -18,8 +20,8 @@ class mysql_data:
         self.cursor.execute('create database '+db_name)
         self.cursor.execute('use '+db_name)
         
-#    def delete_DATABASE(self,db_name):
-#        self.cursor.execute('drop database if exists '+db_name)
+    def delete_DATABASE(self,db_name):
+        self.cursor.execute('drop database if exists '+db_name)
 
     def use_DATABASE(self,db_name):
         try:
@@ -31,7 +33,6 @@ class mysql_data:
         self.cursor.execute('show databases')
         return self.cursor.fetchall()
         
-             
     def create_TABLE(self,name,content):
         self.cursor.execute('drop table if exists '+name)
         self.cursor.execute('create table '+name+'('+content+')')
@@ -64,13 +65,9 @@ class mysql_data:
 #db.delete_TABLE('hh')
 #db.close()
 
-import xlrd
 import pymysql
+from init import *
 
-
-    
-
-sheet=xlrd.open_workbook('基准站配置0305.xlsx')
 table=sheet.sheets()[0]
 
 ncols=table.ncols
@@ -90,16 +87,17 @@ for i in range(1,nrows):
 #            data[i-1][j]='null'
         
 
-table_head=['lb','lbxh','zddh','zdmc','jsjIP','ckzbh','jsjbh','txbh','txxh',
-            'jsjpp','jsjxh','ssq','dw','zdszfwq','zdszgc','sjbfdk','nwbfdk',
-            'gcdlx','sjcsgs','yys','cslx','zdjrsj','dz','kjzdmc','zdbh',
-            'gcz','wdyzz','yzz','hxzd','jsjwldlyhm','jsjwydlmm','bz']
+
 define_table=''
 using_table=''
 for i in range(len(table_head)):
-    if table_head[i]=='zdjrsj':
-        define_table=define_table+table_head[i]+' date, '
-        using_table=using_table+table_head[i]+', '
+    check=False
+    for j in range(len(date_table_head)):        
+        if table_head[i]==date_table_head[j]:
+            define_table=define_table+table_head[i]+' date, '
+            using_table=using_table+table_head[i]+', '
+            check=True
+    if check:
         continue
     if type(data[0][i])==float:
         define_table=define_table+table_head[i]+' float, '
@@ -113,9 +111,13 @@ value=[]
 for i in range(len(data)):
     sing=''
     for j in range(len(data[0])):
-        if table_head[j]=='zdjrsj':
-             sing=sing+"'10000101',"
-             continue
+        check=False
+        for k in range(len(date_table_head)):
+            if table_head[j]==date_table_head[k] and data[i][j]=='':
+                sing=sing+"'10000101',"
+                check=True
+        if check:
+            continue
         if type(data[0][j])==float or type(data[0][j])==int:
             if data[i][j]=='':
                 data[i][j]=-1
