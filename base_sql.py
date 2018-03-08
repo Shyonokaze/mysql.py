@@ -6,79 +6,18 @@ Created on Wed Mar  7 11:13:35 2018
 @author: pyh
 """
 
-class mysql_data:
-    def __init__(self,user_name,password):
-        self.conn=pymysql.connect(host='127.0.0.1',
-                 port=3306,
-                 user=user_name,
-                 passwd=password,
-                 charset='utf8')
-        self.cursor=self.conn.cursor()
-        
-    def create_DATABASE(self,db_name):
-        self.cursor.execute('drop database if exists '+db_name)
-        self.cursor.execute('create database '+db_name)
-        self.cursor.execute('use '+db_name)
-        
-    def delete_DATABASE(self,db_name):
-        self.cursor.execute('drop database if exists '+db_name)
-
-    def use_DATABASE(self,db_name):
-        try:
-             self.cursor.execute('use '+db_name)
-        except:
-             print('use new database failed')
-    
-    def show_DATABASE(self):
-        self.cursor.execute('show databases')
-        return self.cursor.fetchall()
-        
-    def create_TABLE(self,name,content):
-        self.cursor.execute('drop table if exists '+name)
-        self.cursor.execute('create table '+name+'('+content+')')
-        
-    def insert_TABLE(self,table,value):
-        self.cursor.execute('insert into '+table+' values('+value+')')
-        self.conn.commit()
-        
-    def delete_TABLE(self,table_name):
-        self.cursor.execute('drop table if exists '+table_name)
-        
-    def show_TABLE(self,table_name):
-        self.cursor.execute('select * from '+table_name)
-        return self.cursor.fetchall()
-        
-    def close(self):
-        self.cursor.close()
-        self.conn.close()
-    
-
-#import pymysql
-#db=mysql_data('root','622825')
-#db.create_DATABASE('test5')
-#db.use_DATABASE('test1')
-#db.create_TABLE('hh','id int,name varchar(20) charset utf8')
-#db.insert_TABLE('hh(id,name)',"11,'苏打'")
-#db.insert_TABLE('hh(id,name)',"12,'sss'")
-#print(db.show_DATABASE())
-#print(db.show_TABLE('hh'))
-#db.delete_TABLE('hh')
-#db.close()
-
-import pymysql
+import xlrd
 from init import *
+from mysql_data import *
 
+sheet=xlrd.open_workbook(file_name)
 table=sheet.sheets()[0]
 
 ncols=table.ncols
 nrows=table.nrows
 
 
-data=[]
-
-
-
-    
+data=[]   
 for i in range(1,nrows):
     data.append([])
     for j in range(ncols):
@@ -127,13 +66,15 @@ for i in range(len(data)):
     value.append(sing[0:-1])
         
 db=mysql_data('root','622825')
-db.create_DATABASE('base')    
-db.create_TABLE('station',define_table[0:-2])
+db.create_DATABASE(db_name)    
+db.create_TABLE(table_name,define_table[0:-2])
 
 for i in range(len(value)):
-    print(i)
-    db.insert_TABLE('station('+using_table[0:-2]+')',value[i])
+    print('number:%d'%i)
+    db.insert_TABLE(table_name+'('+using_table[0:-2]+')',value[i])
     
-print(db.show_TABLE('station'))
+print(db.show_TABLE(table_name))
+
+db.close()
 
     
