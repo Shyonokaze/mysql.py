@@ -43,8 +43,8 @@ for file_name in os.listdir(dirpath):
         line=fid.readline()        
         
     value=''
-#    for i in range(len(data)):
-    for i in range(100):
+    for i in range(len(data)):
+#    for i in range(100):
         value=value+'('
         sing="'"+str(file_name[0:7])+"'"+', '
         for j in range(len(data[0])):
